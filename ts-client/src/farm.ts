@@ -214,7 +214,7 @@ export class PoolFarmImpl {
     const claimAllTxs = await Promise.all(
       poolFarmsImpl.map(async (poolFarmImpl) => {
         const claimMethod = await poolFarmImpl.claimMethodBuilder(owner);
-        return await claimMethod.method.transaction();
+        return await claimMethod.transaction();
       })
     );
 
@@ -383,29 +383,24 @@ export class PoolFarmImpl {
     userRewardAIx && preInstructions.push(userRewardAIx);
     userRewardBIx && preInstructions.push(userRewardBIx);
 
-    return {
-      method: this.program.methods
-        .claim()
-        .accounts({
-          owner,
-          pool: this.address,
-          rewardAAccount: userRewardAATA,
-          rewardBAccount: isDual ? userRewardBATA : userRewardAATA,
-          rewardAVault: this.poolState.rewardAVault,
-          rewardBVault: this.poolState.rewardBVault,
-          stakingVault: this.poolState.stakingVault,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          user: userPda,
-        })
-        .preInstructions(preInstructions),
-      preInstructions,
-    };
+    return this.program.methods
+      .claim()
+      .accounts({
+        owner,
+        pool: this.address,
+        rewardAAccount: userRewardAATA,
+        rewardBAccount: isDual ? userRewardBATA : userRewardAATA,
+        rewardAVault: this.poolState.rewardAVault,
+        rewardBVault: this.poolState.rewardBVault,
+        stakingVault: this.poolState.stakingVault,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        user: userPda,
+      })
+      .preInstructions(preInstructions);
   }
 
   public async claim(owner: PublicKey) {
-    const claimTx = await (
-      await this.claimMethodBuilder(owner)
-    ).method.transaction();
+    const claimTx = await (await this.claimMethodBuilder(owner)).transaction();
 
     return new Transaction({
       feePayer: owner,
@@ -420,7 +415,7 @@ export class PoolFarmImpl {
 
     const claimMethodBuilder = await this.claimMethodBuilder(owner);
 
-    const claimTransaction = await claimMethodBuilder.method.transaction();
+    const claimTransaction = await claimMethodBuilder.transaction();
 
     if (!claimTransaction) return;
 
