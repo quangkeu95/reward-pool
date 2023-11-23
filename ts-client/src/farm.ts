@@ -196,18 +196,9 @@ export class PoolFarmImpl {
   ) {
     const { program } = getFarmProgram(connection);
 
-    const userBalanceMap = await PoolFarmImpl.getUserBalances(
-      connection,
-      owner,
-      farmMints
-    );
-    const farmMintWithBalance = Array.from(userBalanceMap.keys()).map(
-      (farmMint) => new PublicKey(farmMint)
-    );
-
     const poolFarmsImpl = await PoolFarmImpl.createMultiple(
       connection,
-      farmMintWithBalance,
+      farmMints,
       { cluster: opt?.cluster }
     );
 
