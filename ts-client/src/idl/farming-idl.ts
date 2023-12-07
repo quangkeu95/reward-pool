@@ -1,828 +1,1292 @@
 export type Farming = {
-  version: '0.2.0';
-  name: 'farming';
+  version: "0.2.1";
+  name: "farming";
+  docs: ["Dual farming program"];
   instructions: [
     {
-      name: 'initializePool';
+      name: "initializePool";
+      docs: [
+        "Initializes a new pool. Able to create pool with single reward by passing the same Mint account for reward_a_mint and reward_a_mint"
+      ];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'stakingMint';
+          name: "stakingMint";
           isMut: false;
           isSigner: false;
+          docs: ["Staking mint"];
         },
         {
-          name: 'stakingVault';
+          name: "stakingVault";
           isMut: true;
           isSigner: false;
+          docs: ["Staking vault PDA"];
         },
         {
-          name: 'rewardAMint';
+          name: "rewardAMint";
           isMut: false;
           isSigner: false;
+          docs: ["Reward A mint"];
         },
         {
-          name: 'rewardAVault';
+          name: "rewardAVault";
           isMut: true;
           isSigner: false;
+          docs: ["Reward A vault PDA"];
         },
         {
-          name: 'rewardBMint';
+          name: "rewardBMint";
           isMut: false;
           isSigner: false;
+          docs: ["Reward B mint"];
         },
         {
-          name: 'rewardBVault';
+          name: "rewardBVault";
           isMut: true;
           isSigner: false;
+          docs: ["Reward B vault PDA"];
         },
         {
-          name: 'authority';
+          name: "authority";
           isMut: true;
           isSigner: true;
+          docs: ["Authority of the pool"];
         },
         {
-          name: 'base';
+          name: "base";
           isMut: false;
           isSigner: true;
+          docs: ["Base"];
         },
         {
-          name: 'systemProgram';
+          name: "systemProgram";
           isMut: false;
           isSigner: false;
+          docs: ["System program"];
         },
         {
-          name: 'tokenProgram';
+          name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["SPL Token program"];
         },
         {
-          name: 'rent';
+          name: "rent";
           isMut: false;
           isSigner: false;
-        },
+          docs: ["Rent"];
+        }
       ];
       args: [
         {
-          name: 'rewardDuration';
-          type: 'u64';
-        },
+          name: "rewardDuration";
+          type: "u64";
+        }
       ];
     },
     {
-      name: 'createUser';
+      name: "createUser";
+      docs: ["Initialize a user staking account"];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'user';
+          name: "user";
           isMut: true;
           isSigner: false;
+          docs: ["User"];
         },
         {
-          name: 'owner';
+          name: "owner";
           isMut: true;
           isSigner: true;
+          docs: ["Authority of user account"];
         },
         {
-          name: 'systemProgram';
+          name: "systemProgram";
           isMut: false;
           isSigner: false;
-        },
-      ];
-      args: [];
-    },
-    {
-      name: 'pause';
-      accounts: [
-        {
-          name: 'pool';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'authority';
-          isMut: false;
-          isSigner: true;
-        },
+          docs: ["Misc."];
+        }
       ];
       args: [];
     },
     {
-      name: 'unpause';
+      name: "pause";
+      docs: ["Pause the pool"];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'authority';
+          name: "authority";
           isMut: false;
           isSigner: true;
-        },
+          docs: ["Authority of the pool"];
+        }
       ];
       args: [];
     },
     {
-      name: 'deposit';
+      name: "unpause";
+      docs: ["Unpauses a previously paused pool. Allowing for funding."];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'stakingVault';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'user';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'owner';
+          name: "authority";
           isMut: false;
           isSigner: true;
-        },
+          docs: ["Authority of the pool"];
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "deposit";
+      docs: ["User deposit tokens in the pool."];
+      accounts: [
         {
-          name: 'stakeFromAccount';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the deposit/withdraw instance."];
         },
         {
-          name: 'tokenProgram';
+          name: "stakingVault";
+          isMut: true;
+          isSigner: false;
+          docs: ["Staking vault PDA."];
+        },
+        {
+          name: "user";
+          isMut: true;
+          isSigner: false;
+          docs: ["User."];
+        },
+        {
+          name: "owner";
+          isMut: false;
+          isSigner: true;
+          docs: ["Authority of user"];
+        },
+        {
+          name: "stakeFromAccount";
+          isMut: true;
+          isSigner: false;
+          docs: ["User staking ATA"];
+        },
+        {
+          name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
+          docs: ["Misc."];
+        }
       ];
       args: [
         {
-          name: 'amount';
-          type: 'u64';
-        },
+          name: "amount";
+          type: "u64";
+        }
       ];
     },
     {
-      name: 'withdraw';
+      name: "withdraw";
+      docs: ["User withdraw tokens in the pool."];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the deposit/withdraw instance."];
         },
         {
-          name: 'stakingVault';
+          name: "stakingVault";
           isMut: true;
           isSigner: false;
+          docs: ["Staking vault PDA."];
         },
         {
-          name: 'user';
+          name: "user";
           isMut: true;
           isSigner: false;
+          docs: ["User."];
         },
         {
-          name: 'owner';
+          name: "owner";
           isMut: false;
           isSigner: true;
+          docs: ["Authority of user"];
         },
         {
-          name: 'stakeFromAccount';
+          name: "stakeFromAccount";
           isMut: true;
           isSigner: false;
+          docs: ["User staking ATA"];
         },
         {
-          name: 'tokenProgram';
+          name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
+          docs: ["Misc."];
+        }
       ];
       args: [
         {
-          name: 'sptAmount';
-          type: 'u64';
-        },
+          name: "sptAmount";
+          type: "u64";
+        }
       ];
     },
     {
-      name: 'authorizeFunder';
+      name: "authorizeFunder";
+      docs: ["Authorize additional funders for the pool"];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'authority';
+          name: "authority";
           isMut: false;
           isSigner: true;
-        },
+          docs: ["Authority of the pool"];
+        }
       ];
       args: [
         {
-          name: 'funderToAdd';
-          type: 'publicKey';
-        },
+          name: "funderToAdd";
+          type: "publicKey";
+        }
       ];
     },
     {
-      name: 'deauthorizeFunder';
+      name: "deauthorizeFunder";
+      docs: ["Deauthorize funders for the pool"];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'authority';
+          name: "authority";
           isMut: false;
           isSigner: true;
-        },
+          docs: ["Authority of the pool"];
+        }
       ];
       args: [
         {
-          name: 'funderToRemove';
-          type: 'publicKey';
-        },
+          name: "funderToRemove";
+          type: "publicKey";
+        }
       ];
     },
     {
-      name: 'fund';
+      name: "fund";
+      docs: [
+        "Fund the pool with rewards.  This resets the clock on the end date, pushing it out to the set duration. And, linearly redistributes remaining rewards."
+      ];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'stakingVault';
+          name: "stakingVault";
           isMut: true;
           isSigner: false;
+          docs: ["Staking vault PDA"];
         },
         {
-          name: 'rewardAVault';
+          name: "rewardAVault";
           isMut: true;
           isSigner: false;
+          docs: ["Reward A Vault PDA"];
         },
         {
-          name: 'rewardBVault';
+          name: "rewardBVault";
           isMut: true;
           isSigner: false;
+          docs: ["Reward B Vault PDA"];
         },
         {
-          name: 'funder';
+          name: "funder";
           isMut: false;
           isSigner: true;
+          docs: ["Funder"];
         },
         {
-          name: 'fromA';
+          name: "fromA";
           isMut: true;
           isSigner: false;
+          docs: ["Funder reward A ATA"];
         },
         {
-          name: 'fromB';
+          name: "fromB";
           isMut: true;
           isSigner: false;
+          docs: ["Funder reward B ATA"];
         },
         {
-          name: 'tokenProgram';
+          name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
+          docs: ["Misc."];
+        }
       ];
       args: [
         {
-          name: 'amountA';
-          type: 'u64';
+          name: "amountA";
+          type: "u64";
         },
         {
-          name: 'amountB';
-          type: 'u64';
-        },
+          name: "amountB";
+          type: "u64";
+        }
       ];
     },
     {
-      name: 'claim';
+      name: "claim";
+      docs: ["User claim rewards"];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'stakingVault';
+          name: "stakingVault";
           isMut: true;
           isSigner: false;
+          docs: ["Staking vault PDA."];
         },
         {
-          name: 'rewardAVault';
+          name: "rewardAVault";
           isMut: true;
           isSigner: false;
+          docs: ["Reward A Vault PDA"];
         },
         {
-          name: 'rewardBVault';
+          name: "rewardBVault";
           isMut: true;
           isSigner: false;
+          docs: ["Reward B Vault PDA"];
         },
         {
-          name: 'user';
+          name: "user";
           isMut: true;
           isSigner: false;
+          docs: ["User."];
         },
         {
-          name: 'owner';
+          name: "owner";
           isMut: false;
           isSigner: true;
+          docs: ["Authority of user"];
         },
         {
-          name: 'rewardAAccount';
+          name: "rewardAAccount";
           isMut: true;
           isSigner: false;
+          docs: ["User's Reward A ATA"];
         },
         {
-          name: 'rewardBAccount';
+          name: "rewardBAccount";
           isMut: true;
           isSigner: false;
+          docs: ["User's Reward B ATA"];
         },
         {
-          name: 'tokenProgram';
+          name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
+        }
       ];
       args: [];
     },
     {
-      name: 'withdrawExtraToken';
+      name: "withdrawExtraToken";
+      docs: ["Withdraw token that mistakenly deposited to staking_vault"];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: false;
           isSigner: false;
+          docs: ["Global accounts for the staking instance."];
         },
         {
-          name: 'stakingVault';
+          name: "stakingVault";
           isMut: true;
           isSigner: false;
+          docs: ["Staking vault PDA"];
         },
         {
-          name: 'withdrawToAccount';
+          name: "withdrawToAccount";
           isMut: true;
           isSigner: false;
+          docs: ["Token account to receive mistakenly deposited token"];
         },
         {
-          name: 'authority';
+          name: "authority";
           isMut: false;
           isSigner: true;
+          docs: ["Authority of the staking instance"];
         },
         {
-          name: 'tokenProgram';
+          name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
+          docs: ["Misc."];
+        }
       ];
       args: [];
     },
     {
-      name: 'closeUser';
+      name: "closeUser";
+      docs: [
+        "Closes a users stake account. Validation is done to ensure this is only allowed when the user has nothing staked and no rewards pending."
+      ];
       accounts: [
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'user';
+          name: "user";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'owner';
+          name: "owner";
           isMut: true;
           isSigner: true;
-        },
+        }
       ];
       args: [];
     },
     {
-      name: 'closePool';
+      name: "migrateFarmingRate";
+      docs: ["anyone can call this"];
       accounts: [
         {
-          name: 'refundee';
+          name: "pool";
+          isMut: true;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "closePool";
+      docs: [
+        "Closes a pool account. Only able to be done when there are no users staked."
+      ];
+      accounts: [
+        {
+          name: "refundee";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'stakingRefundee';
+          name: "stakingRefundee";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'rewardARefundee';
+          name: "rewardARefundee";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'rewardBRefundee';
+          name: "rewardBRefundee";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'pool';
+          name: "pool";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'authority';
+          name: "authority";
           isMut: false;
           isSigner: true;
         },
         {
-          name: 'stakingVault';
+          name: "stakingVault";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'rewardAVault';
+          name: "rewardAVault";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'rewardBVault';
+          name: "rewardBVault";
           isMut: true;
           isSigner: false;
         },
         {
-          name: 'tokenProgram';
+          name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
+        }
       ];
       args: [];
-    },
+    }
   ];
   accounts: [
     {
-      name: 'pool';
+      name: "pool";
+      docs: ["Pool account wrapper"];
       type: {
-        kind: 'struct';
+        kind: "struct";
         fields: [
           {
-            name: 'authority';
-            type: 'publicKey';
+            name: "authority";
+            docs: ["Privileged account."];
+            type: "publicKey";
           },
           {
-            name: 'paused';
-            type: 'bool';
+            name: "paused";
+            docs: ["Paused state of the program"];
+            type: "bool";
           },
           {
-            name: 'stakingMint';
-            type: 'publicKey';
+            name: "stakingMint";
+            docs: ["Mint of the token that can be staked."];
+            type: "publicKey";
           },
           {
-            name: 'stakingVault';
-            type: 'publicKey';
+            name: "stakingVault";
+            docs: ["Vault to store staked tokens."];
+            type: "publicKey";
           },
           {
-            name: 'rewardAMint';
-            type: 'publicKey';
+            name: "rewardAMint";
+            docs: ["Mint of the reward A token."];
+            type: "publicKey";
           },
           {
-            name: 'rewardAVault';
-            type: 'publicKey';
+            name: "rewardAVault";
+            docs: ["Vault to store reward A tokens."];
+            type: "publicKey";
           },
           {
-            name: 'rewardBMint';
-            type: 'publicKey';
+            name: "rewardBMint";
+            docs: ["Mint of the reward B token."];
+            type: "publicKey";
           },
           {
-            name: 'rewardBVault';
-            type: 'publicKey';
+            name: "rewardBVault";
+            docs: ["Vault to store reward B tokens."];
+            type: "publicKey";
           },
           {
-            name: 'baseKey';
-            type: 'publicKey';
+            name: "baseKey";
+            docs: ["Base key"];
+            type: "publicKey";
           },
           {
-            name: 'rewardDuration';
-            type: 'u64';
+            name: "rewardDuration";
+            docs: ["The period which rewards are linearly distributed."];
+            type: "u64";
           },
           {
-            name: 'rewardDurationEnd';
-            type: 'u64';
+            name: "rewardDurationEnd";
+            docs: ["The timestamp at which the current reward period ends."];
+            type: "u64";
           },
           {
-            name: 'lastUpdateTime';
-            type: 'u64';
+            name: "lastUpdateTime";
+            docs: ["The last time reward states were updated."];
+            type: "u64";
           },
           {
-            name: 'rewardARate';
-            type: 'u64';
+            name: "rewardARate";
+            docs: ["deprecated field"];
+            type: "u64";
           },
           {
-            name: 'rewardBRate';
-            type: 'u64';
+            name: "rewardBRate";
+            docs: ["deprecated field"];
+            type: "u64";
           },
           {
-            name: 'rewardAPerTokenStored';
-            type: 'u128';
+            name: "rewardAPerTokenStored";
+            docs: ["Last calculated reward A per pool token."];
+            type: "u128";
           },
           {
-            name: 'rewardBPerTokenStored';
-            type: 'u128';
+            name: "rewardBPerTokenStored";
+            docs: ["Last calculated reward B per pool token."];
+            type: "u128";
           },
           {
-            name: 'userStakeCount';
-            type: 'u32';
+            name: "userStakeCount";
+            docs: ["Users staked"];
+            type: "u32";
           },
           {
-            name: 'funders';
+            name: "funders";
+            docs: [
+              "authorized funders",
+              "[] because short size, fixed account size, and ease of use on",
+              "client due to auto generated account size property"
+            ];
             type: {
-              array: ['publicKey', 4];
+              array: ["publicKey", 3];
             };
           },
           {
-            name: 'poolBump';
-            type: 'u8';
+            name: "rewardARateU128";
+            docs: ["reward_a_rate in u128 form"];
+            type: "u128";
           },
           {
-            name: 'totalStaked';
-            type: 'u64';
+            name: "rewardBRateU128";
+            docs: ["reward_b_rate in u128 form"];
+            type: "u128";
           },
+          {
+            name: "poolBump";
+            docs: ["Pool bump"];
+            type: "u8";
+          },
+          {
+            name: "totalStaked";
+            docs: ["Total staked amount"];
+            type: "u64";
+          }
         ];
       };
     },
     {
-      name: 'user';
+      name: "user";
+      docs: ["Farming user account"];
       type: {
-        kind: 'struct';
+        kind: "struct";
         fields: [
           {
-            name: 'pool';
-            type: 'publicKey';
+            name: "pool";
+            docs: ["Pool the this user belongs to."];
+            type: "publicKey";
           },
           {
-            name: 'owner';
-            type: 'publicKey';
+            name: "owner";
+            docs: ["The owner of this account."];
+            type: "publicKey";
           },
           {
-            name: 'rewardAPerTokenComplete';
-            type: 'u128';
+            name: "rewardAPerTokenComplete";
+            docs: ["The amount of token A claimed."];
+            type: "u128";
           },
           {
-            name: 'rewardBPerTokenComplete';
-            type: 'u128';
+            name: "rewardBPerTokenComplete";
+            docs: ["The amount of token B claimed."];
+            type: "u128";
           },
           {
-            name: 'rewardAPerTokenPending';
-            type: 'u64';
+            name: "rewardAPerTokenPending";
+            docs: ["The amount of token A pending claim."];
+            type: "u64";
           },
           {
-            name: 'rewardBPerTokenPending';
-            type: 'u64';
+            name: "rewardBPerTokenPending";
+            docs: ["The amount of token B pending claim."];
+            type: "u64";
           },
           {
-            name: 'balanceStaked';
-            type: 'u64';
+            name: "balanceStaked";
+            docs: ["The amount staked."];
+            type: "u64";
           },
           {
-            name: 'nonce';
-            type: 'u8';
-          },
+            name: "nonce";
+            docs: ["Signer nonce."];
+            type: "u8";
+          }
         ];
       };
-    },
+    }
   ];
   events: [
     {
-      name: 'EventDeposit';
+      name: "EventDeposit";
       fields: [
         {
-          name: 'amount';
-          type: 'u64';
+          name: "amount";
+          type: "u64";
           index: false;
-        },
+        }
       ];
     },
     {
-      name: 'EventWithdraw';
+      name: "EventWithdraw";
       fields: [
         {
-          name: 'amount';
-          type: 'u64';
+          name: "amount";
+          type: "u64";
           index: false;
-        },
+        }
       ];
     },
     {
-      name: 'EventFund';
+      name: "EventFund";
       fields: [
         {
-          name: 'amountA';
-          type: 'u64';
+          name: "amountA";
+          type: "u64";
           index: false;
         },
         {
-          name: 'amountB';
-          type: 'u64';
+          name: "amountB";
+          type: "u64";
           index: false;
-        },
+        }
       ];
     },
     {
-      name: 'EventClaim';
+      name: "EventClaim";
       fields: [
         {
-          name: 'amountA';
-          type: 'u64';
+          name: "amountA";
+          type: "u64";
           index: false;
         },
         {
-          name: 'amountB';
-          type: 'u64';
+          name: "amountB";
+          type: "u64";
           index: false;
-        },
+        }
       ];
     },
     {
-      name: 'EventAuthorizeFunder';
+      name: "EventAuthorizeFunder";
       fields: [
         {
-          name: 'newFunder';
-          type: 'publicKey';
+          name: "newFunder";
+          type: "publicKey";
           index: false;
-        },
+        }
       ];
     },
     {
-      name: 'EventUnauthorizeFunder';
+      name: "EventUnauthorizeFunder";
       fields: [
         {
-          name: 'funder';
-          type: 'publicKey';
+          name: "funder";
+          type: "publicKey";
           index: false;
-        },
+        }
       ];
-    },
+    }
   ];
   errors: [
     {
       code: 6000;
-      name: 'InsufficientFundWithdraw';
-      msg: 'Insufficient funds to withdraw.';
+      name: "InsufficientFundWithdraw";
+      msg: "Insufficient funds to withdraw.";
     },
     {
       code: 6001;
-      name: 'AmountMustBeGreaterThanZero';
-      msg: 'Amount must be greater than zero.';
+      name: "AmountMustBeGreaterThanZero";
+      msg: "Amount must be greater than zero.";
     },
     {
       code: 6002;
-      name: 'SingleDepositTokenBCannotBeFunded';
-      msg: 'Reward B cannot be funded - pool is single deposit.';
+      name: "SingleDepositTokenBCannotBeFunded";
+      msg: "Reward B cannot be funded - pool is single deposit.";
     },
     {
       code: 6003;
-      name: 'PoolPaused';
-      msg: 'Pool is paused.';
+      name: "PoolPaused";
+      msg: "Pool is paused.";
     },
     {
       code: 6004;
-      name: 'DurationTooShort';
-      msg: 'Duration cannot be shorter than one day.';
+      name: "DurationTooShort";
+      msg: "Duration cannot be shorter than one day.";
     },
     {
       code: 6005;
-      name: 'FunderAlreadyAuthorized';
-      msg: 'Provided funder is already authorized to fund.';
+      name: "FunderAlreadyAuthorized";
+      msg: "Provided funder is already authorized to fund.";
     },
     {
       code: 6006;
-      name: 'MaxFunders';
-      msg: 'Maximum funders already authorized.';
+      name: "MaxFunders";
+      msg: "Maximum funders already authorized.";
     },
     {
       code: 6007;
-      name: 'CannotDeauthorizePoolAuthority';
-      msg: 'Cannot deauthorize the primary pool authority.';
+      name: "CannotDeauthorizePoolAuthority";
+      msg: "Cannot deauthorize the primary pool authority.";
     },
     {
       code: 6008;
-      name: 'CannotDeauthorizeMissingAuthority';
-      msg: 'Authority not found for deauthorization.';
+      name: "CannotDeauthorizeMissingAuthority";
+      msg: "Authority not found for deauthorization.";
     },
     {
       code: 6009;
-      name: 'MathOverflow';
-      msg: 'Math operation overflow';
-    },
+      name: "MathOverflow";
+      msg: "Math operation overflow";
+    }
   ];
 };
 
 export const IDL: Farming = {
-  version: '0.2.0',
-  name: 'farming',
+  version: "0.2.1",
+  name: "farming",
+  docs: ["Dual farming program"],
   instructions: [
     {
-      name: 'initializePool',
+      name: "initializePool",
+      docs: [
+        "Initializes a new pool. Able to create pool with single reward by passing the same Mint account for reward_a_mint and reward_a_mint",
+      ],
       accounts: [
         {
-          name: 'pool',
+          name: "pool",
           isMut: true,
           isSigner: false,
+          docs: ["Global accounts for the staking instance."],
         },
         {
-          name: 'stakingMint',
+          name: "stakingMint",
           isMut: false,
           isSigner: false,
+          docs: ["Staking mint"],
         },
         {
-          name: 'stakingVault',
+          name: "stakingVault",
           isMut: true,
           isSigner: false,
+          docs: ["Staking vault PDA"],
         },
         {
-          name: 'rewardAMint',
+          name: "rewardAMint",
           isMut: false,
           isSigner: false,
+          docs: ["Reward A mint"],
         },
         {
-          name: 'rewardAVault',
+          name: "rewardAVault",
           isMut: true,
           isSigner: false,
+          docs: ["Reward A vault PDA"],
         },
         {
-          name: 'rewardBMint',
+          name: "rewardBMint",
           isMut: false,
           isSigner: false,
+          docs: ["Reward B mint"],
         },
         {
-          name: 'rewardBVault',
+          name: "rewardBVault",
           isMut: true,
           isSigner: false,
+          docs: ["Reward B vault PDA"],
         },
         {
-          name: 'authority',
+          name: "authority",
           isMut: true,
           isSigner: true,
+          docs: ["Authority of the pool"],
         },
         {
-          name: 'base',
+          name: "base",
           isMut: false,
           isSigner: true,
+          docs: ["Base"],
         },
         {
-          name: 'systemProgram',
+          name: "systemProgram",
           isMut: false,
           isSigner: false,
+          docs: ["System program"],
         },
         {
-          name: 'tokenProgram',
+          name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["SPL Token program"],
         },
         {
-          name: 'rent',
+          name: "rent",
           isMut: false,
           isSigner: false,
+          docs: ["Rent"],
         },
       ],
       args: [
         {
-          name: 'rewardDuration',
-          type: 'u64',
+          name: "rewardDuration",
+          type: "u64",
         },
       ],
     },
     {
-      name: 'createUser',
+      name: "createUser",
+      docs: ["Initialize a user staking account"],
       accounts: [
         {
-          name: 'pool',
+          name: "pool",
           isMut: true,
           isSigner: false,
+          docs: ["Global accounts for the staking instance."],
         },
         {
-          name: 'user',
+          name: "user",
           isMut: true,
           isSigner: false,
+          docs: ["User"],
         },
         {
-          name: 'owner',
+          name: "owner",
           isMut: true,
           isSigner: true,
+          docs: ["Authority of user account"],
         },
         {
-          name: 'systemProgram',
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["Misc."],
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "pause",
+      docs: ["Pause the pool"],
+      accounts: [
+        {
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+          docs: ["Global accounts for the staking instance."],
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+          docs: ["Authority of the pool"],
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "unpause",
+      docs: ["Unpauses a previously paused pool. Allowing for funding."],
+      accounts: [
+        {
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+          docs: ["Global accounts for the staking instance."],
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+          docs: ["Authority of the pool"],
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "deposit",
+      docs: ["User deposit tokens in the pool."],
+      accounts: [
+        {
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+          docs: ["Global accounts for the deposit/withdraw instance."],
+        },
+        {
+          name: "stakingVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Staking vault PDA."],
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: false,
+          docs: ["User."],
+        },
+        {
+          name: "owner",
+          isMut: false,
+          isSigner: true,
+          docs: ["Authority of user"],
+        },
+        {
+          name: "stakeFromAccount",
+          isMut: true,
+          isSigner: false,
+          docs: ["User staking ATA"],
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["Misc."],
+        },
+      ],
+      args: [
+        {
+          name: "amount",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "withdraw",
+      docs: ["User withdraw tokens in the pool."],
+      accounts: [
+        {
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+          docs: ["Global accounts for the deposit/withdraw instance."],
+        },
+        {
+          name: "stakingVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Staking vault PDA."],
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: false,
+          docs: ["User."],
+        },
+        {
+          name: "owner",
+          isMut: false,
+          isSigner: true,
+          docs: ["Authority of user"],
+        },
+        {
+          name: "stakeFromAccount",
+          isMut: true,
+          isSigner: false,
+          docs: ["User staking ATA"],
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["Misc."],
+        },
+      ],
+      args: [
+        {
+          name: "sptAmount",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "authorizeFunder",
+      docs: ["Authorize additional funders for the pool"],
+      accounts: [
+        {
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+          docs: ["Global accounts for the staking instance."],
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+          docs: ["Authority of the pool"],
+        },
+      ],
+      args: [
+        {
+          name: "funderToAdd",
+          type: "publicKey",
+        },
+      ],
+    },
+    {
+      name: "deauthorizeFunder",
+      docs: ["Deauthorize funders for the pool"],
+      accounts: [
+        {
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+          docs: ["Global accounts for the staking instance."],
+        },
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+          docs: ["Authority of the pool"],
+        },
+      ],
+      args: [
+        {
+          name: "funderToRemove",
+          type: "publicKey",
+        },
+      ],
+    },
+    {
+      name: "fund",
+      docs: [
+        "Fund the pool with rewards.  This resets the clock on the end date, pushing it out to the set duration. And, linearly redistributes remaining rewards.",
+      ],
+      accounts: [
+        {
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+          docs: ["Global accounts for the staking instance."],
+        },
+        {
+          name: "stakingVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Staking vault PDA"],
+        },
+        {
+          name: "rewardAVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Reward A Vault PDA"],
+        },
+        {
+          name: "rewardBVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Reward B Vault PDA"],
+        },
+        {
+          name: "funder",
+          isMut: false,
+          isSigner: true,
+          docs: ["Funder"],
+        },
+        {
+          name: "fromA",
+          isMut: true,
+          isSigner: false,
+          docs: ["Funder reward A ATA"],
+        },
+        {
+          name: "fromB",
+          isMut: true,
+          isSigner: false,
+          docs: ["Funder reward B ATA"],
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["Misc."],
+        },
+      ],
+      args: [
+        {
+          name: "amountA",
+          type: "u64",
+        },
+        {
+          name: "amountB",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "claim",
+      docs: ["User claim rewards"],
+      accounts: [
+        {
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+          docs: ["Global accounts for the staking instance."],
+        },
+        {
+          name: "stakingVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Staking vault PDA."],
+        },
+        {
+          name: "rewardAVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Reward A Vault PDA"],
+        },
+        {
+          name: "rewardBVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Reward B Vault PDA"],
+        },
+        {
+          name: "user",
+          isMut: true,
+          isSigner: false,
+          docs: ["User."],
+        },
+        {
+          name: "owner",
+          isMut: false,
+          isSigner: true,
+          docs: ["Authority of user"],
+        },
+        {
+          name: "rewardAAccount",
+          isMut: true,
+          isSigner: false,
+          docs: ["User's Reward A ATA"],
+        },
+        {
+          name: "rewardBAccount",
+          isMut: true,
+          isSigner: false,
+          docs: ["User's Reward B ATA"],
+        },
+        {
+          name: "tokenProgram",
           isMut: false,
           isSigner: false,
         },
@@ -830,313 +1294,60 @@ export const IDL: Farming = {
       args: [],
     },
     {
-      name: 'pause',
+      name: "withdrawExtraToken",
+      docs: ["Withdraw token that mistakenly deposited to staking_vault"],
       accounts: [
         {
-          name: 'pool',
-          isMut: true,
+          name: "pool",
+          isMut: false,
           isSigner: false,
+          docs: ["Global accounts for the staking instance."],
         },
         {
-          name: 'authority',
+          name: "stakingVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Staking vault PDA"],
+        },
+        {
+          name: "withdrawToAccount",
+          isMut: true,
+          isSigner: false,
+          docs: ["Token account to receive mistakenly deposited token"],
+        },
+        {
+          name: "authority",
           isMut: false,
           isSigner: true,
+          docs: ["Authority of the staking instance"],
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["Misc."],
         },
       ],
       args: [],
     },
     {
-      name: 'unpause',
+      name: "closeUser",
+      docs: [
+        "Closes a users stake account. Validation is done to ensure this is only allowed when the user has nothing staked and no rewards pending.",
+      ],
       accounts: [
         {
-          name: 'pool',
+          name: "pool",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'authority',
-          isMut: false,
-          isSigner: true,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: 'deposit',
-      accounts: [
-        {
-          name: 'pool',
+          name: "user",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'stakingVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'user',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'owner',
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: 'stakeFromAccount',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'amount',
-          type: 'u64',
-        },
-      ],
-    },
-    {
-      name: 'withdraw',
-      accounts: [
-        {
-          name: 'pool',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'stakingVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'user',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'owner',
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: 'stakeFromAccount',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'sptAmount',
-          type: 'u64',
-        },
-      ],
-    },
-    {
-      name: 'authorizeFunder',
-      accounts: [
-        {
-          name: 'pool',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'authority',
-          isMut: false,
-          isSigner: true,
-        },
-      ],
-      args: [
-        {
-          name: 'funderToAdd',
-          type: 'publicKey',
-        },
-      ],
-    },
-    {
-      name: 'deauthorizeFunder',
-      accounts: [
-        {
-          name: 'pool',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'authority',
-          isMut: false,
-          isSigner: true,
-        },
-      ],
-      args: [
-        {
-          name: 'funderToRemove',
-          type: 'publicKey',
-        },
-      ],
-    },
-    {
-      name: 'fund',
-      accounts: [
-        {
-          name: 'pool',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'stakingVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'rewardAVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'rewardBVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'funder',
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: 'fromA',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'fromB',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'amountA',
-          type: 'u64',
-        },
-        {
-          name: 'amountB',
-          type: 'u64',
-        },
-      ],
-    },
-    {
-      name: 'claim',
-      accounts: [
-        {
-          name: 'pool',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'stakingVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'rewardAVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'rewardBVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'user',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'owner',
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: 'rewardAAccount',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'rewardBAccount',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: 'withdrawExtraToken',
-      accounts: [
-        {
-          name: 'pool',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'stakingVault',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'withdrawToAccount',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'authority',
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: 'closeUser',
-      accounts: [
-        {
-          name: 'pool',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'user',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'owner',
+          name: "owner",
           isMut: true,
           isSigner: true,
         },
@@ -1144,55 +1355,70 @@ export const IDL: Farming = {
       args: [],
     },
     {
-      name: 'closePool',
+      name: "migrateFarmingRate",
+      docs: ["anyone can call this"],
       accounts: [
         {
-          name: 'refundee',
+          name: "pool",
+          isMut: true,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "closePool",
+      docs: [
+        "Closes a pool account. Only able to be done when there are no users staked.",
+      ],
+      accounts: [
+        {
+          name: "refundee",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'stakingRefundee',
+          name: "stakingRefundee",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'rewardARefundee',
+          name: "rewardARefundee",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'rewardBRefundee',
+          name: "rewardBRefundee",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'pool',
+          name: "pool",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'authority',
+          name: "authority",
           isMut: false,
           isSigner: true,
         },
         {
-          name: 'stakingVault',
+          name: "stakingVault",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'rewardAVault',
+          name: "rewardAVault",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'rewardBVault',
+          name: "rewardBVault",
           isMut: true,
           isSigner: false,
         },
         {
-          name: 'tokenProgram',
+          name: "tokenProgram",
           isMut: false,
           isSigner: false,
         },
@@ -1202,131 +1428,175 @@ export const IDL: Farming = {
   ],
   accounts: [
     {
-      name: 'pool',
+      name: "pool",
+      docs: ["Pool account wrapper"],
       type: {
-        kind: 'struct',
+        kind: "struct",
         fields: [
           {
-            name: 'authority',
-            type: 'publicKey',
+            name: "authority",
+            docs: ["Privileged account."],
+            type: "publicKey",
           },
           {
-            name: 'paused',
-            type: 'bool',
+            name: "paused",
+            docs: ["Paused state of the program"],
+            type: "bool",
           },
           {
-            name: 'stakingMint',
-            type: 'publicKey',
+            name: "stakingMint",
+            docs: ["Mint of the token that can be staked."],
+            type: "publicKey",
           },
           {
-            name: 'stakingVault',
-            type: 'publicKey',
+            name: "stakingVault",
+            docs: ["Vault to store staked tokens."],
+            type: "publicKey",
           },
           {
-            name: 'rewardAMint',
-            type: 'publicKey',
+            name: "rewardAMint",
+            docs: ["Mint of the reward A token."],
+            type: "publicKey",
           },
           {
-            name: 'rewardAVault',
-            type: 'publicKey',
+            name: "rewardAVault",
+            docs: ["Vault to store reward A tokens."],
+            type: "publicKey",
           },
           {
-            name: 'rewardBMint',
-            type: 'publicKey',
+            name: "rewardBMint",
+            docs: ["Mint of the reward B token."],
+            type: "publicKey",
           },
           {
-            name: 'rewardBVault',
-            type: 'publicKey',
+            name: "rewardBVault",
+            docs: ["Vault to store reward B tokens."],
+            type: "publicKey",
           },
           {
-            name: 'baseKey',
-            type: 'publicKey',
+            name: "baseKey",
+            docs: ["Base key"],
+            type: "publicKey",
           },
           {
-            name: 'rewardDuration',
-            type: 'u64',
+            name: "rewardDuration",
+            docs: ["The period which rewards are linearly distributed."],
+            type: "u64",
           },
           {
-            name: 'rewardDurationEnd',
-            type: 'u64',
+            name: "rewardDurationEnd",
+            docs: ["The timestamp at which the current reward period ends."],
+            type: "u64",
           },
           {
-            name: 'lastUpdateTime',
-            type: 'u64',
+            name: "lastUpdateTime",
+            docs: ["The last time reward states were updated."],
+            type: "u64",
           },
           {
-            name: 'rewardARate',
-            type: 'u64',
+            name: "rewardARate",
+            docs: ["deprecated field"],
+            type: "u64",
           },
           {
-            name: 'rewardBRate',
-            type: 'u64',
+            name: "rewardBRate",
+            docs: ["deprecated field"],
+            type: "u64",
           },
           {
-            name: 'rewardAPerTokenStored',
-            type: 'u128',
+            name: "rewardAPerTokenStored",
+            docs: ["Last calculated reward A per pool token."],
+            type: "u128",
           },
           {
-            name: 'rewardBPerTokenStored',
-            type: 'u128',
+            name: "rewardBPerTokenStored",
+            docs: ["Last calculated reward B per pool token."],
+            type: "u128",
           },
           {
-            name: 'userStakeCount',
-            type: 'u32',
+            name: "userStakeCount",
+            docs: ["Users staked"],
+            type: "u32",
           },
           {
-            name: 'funders',
+            name: "funders",
+            docs: [
+              "authorized funders",
+              "[] because short size, fixed account size, and ease of use on",
+              "client due to auto generated account size property",
+            ],
             type: {
-              array: ['publicKey', 4],
+              array: ["publicKey", 3],
             },
           },
           {
-            name: 'poolBump',
-            type: 'u8',
+            name: "rewardARateU128",
+            docs: ["reward_a_rate in u128 form"],
+            type: "u128",
           },
           {
-            name: 'totalStaked',
-            type: 'u64',
+            name: "rewardBRateU128",
+            docs: ["reward_b_rate in u128 form"],
+            type: "u128",
+          },
+          {
+            name: "poolBump",
+            docs: ["Pool bump"],
+            type: "u8",
+          },
+          {
+            name: "totalStaked",
+            docs: ["Total staked amount"],
+            type: "u64",
           },
         ],
       },
     },
     {
-      name: 'user',
+      name: "user",
+      docs: ["Farming user account"],
       type: {
-        kind: 'struct',
+        kind: "struct",
         fields: [
           {
-            name: 'pool',
-            type: 'publicKey',
+            name: "pool",
+            docs: ["Pool the this user belongs to."],
+            type: "publicKey",
           },
           {
-            name: 'owner',
-            type: 'publicKey',
+            name: "owner",
+            docs: ["The owner of this account."],
+            type: "publicKey",
           },
           {
-            name: 'rewardAPerTokenComplete',
-            type: 'u128',
+            name: "rewardAPerTokenComplete",
+            docs: ["The amount of token A claimed."],
+            type: "u128",
           },
           {
-            name: 'rewardBPerTokenComplete',
-            type: 'u128',
+            name: "rewardBPerTokenComplete",
+            docs: ["The amount of token B claimed."],
+            type: "u128",
           },
           {
-            name: 'rewardAPerTokenPending',
-            type: 'u64',
+            name: "rewardAPerTokenPending",
+            docs: ["The amount of token A pending claim."],
+            type: "u64",
           },
           {
-            name: 'rewardBPerTokenPending',
-            type: 'u64',
+            name: "rewardBPerTokenPending",
+            docs: ["The amount of token B pending claim."],
+            type: "u64",
           },
           {
-            name: 'balanceStaked',
-            type: 'u64',
+            name: "balanceStaked",
+            docs: ["The amount staked."],
+            type: "u64",
           },
           {
-            name: 'nonce',
-            type: 'u8',
+            name: "nonce",
+            docs: ["Signer nonce."],
+            type: "u8",
           },
         ],
       },
@@ -1334,71 +1604,71 @@ export const IDL: Farming = {
   ],
   events: [
     {
-      name: 'EventDeposit',
+      name: "EventDeposit",
       fields: [
         {
-          name: 'amount',
-          type: 'u64',
+          name: "amount",
+          type: "u64",
           index: false,
         },
       ],
     },
     {
-      name: 'EventWithdraw',
+      name: "EventWithdraw",
       fields: [
         {
-          name: 'amount',
-          type: 'u64',
+          name: "amount",
+          type: "u64",
           index: false,
         },
       ],
     },
     {
-      name: 'EventFund',
+      name: "EventFund",
       fields: [
         {
-          name: 'amountA',
-          type: 'u64',
+          name: "amountA",
+          type: "u64",
           index: false,
         },
         {
-          name: 'amountB',
-          type: 'u64',
+          name: "amountB",
+          type: "u64",
           index: false,
         },
       ],
     },
     {
-      name: 'EventClaim',
+      name: "EventClaim",
       fields: [
         {
-          name: 'amountA',
-          type: 'u64',
+          name: "amountA",
+          type: "u64",
           index: false,
         },
         {
-          name: 'amountB',
-          type: 'u64',
-          index: false,
-        },
-      ],
-    },
-    {
-      name: 'EventAuthorizeFunder',
-      fields: [
-        {
-          name: 'newFunder',
-          type: 'publicKey',
+          name: "amountB",
+          type: "u64",
           index: false,
         },
       ],
     },
     {
-      name: 'EventUnauthorizeFunder',
+      name: "EventAuthorizeFunder",
       fields: [
         {
-          name: 'funder',
-          type: 'publicKey',
+          name: "newFunder",
+          type: "publicKey",
+          index: false,
+        },
+      ],
+    },
+    {
+      name: "EventUnauthorizeFunder",
+      fields: [
+        {
+          name: "funder",
+          type: "publicKey",
           index: false,
         },
       ],
@@ -1407,53 +1677,53 @@ export const IDL: Farming = {
   errors: [
     {
       code: 6000,
-      name: 'InsufficientFundWithdraw',
-      msg: 'Insufficient funds to withdraw.',
+      name: "InsufficientFundWithdraw",
+      msg: "Insufficient funds to withdraw.",
     },
     {
       code: 6001,
-      name: 'AmountMustBeGreaterThanZero',
-      msg: 'Amount must be greater than zero.',
+      name: "AmountMustBeGreaterThanZero",
+      msg: "Amount must be greater than zero.",
     },
     {
       code: 6002,
-      name: 'SingleDepositTokenBCannotBeFunded',
-      msg: 'Reward B cannot be funded - pool is single deposit.',
+      name: "SingleDepositTokenBCannotBeFunded",
+      msg: "Reward B cannot be funded - pool is single deposit.",
     },
     {
       code: 6003,
-      name: 'PoolPaused',
-      msg: 'Pool is paused.',
+      name: "PoolPaused",
+      msg: "Pool is paused.",
     },
     {
       code: 6004,
-      name: 'DurationTooShort',
-      msg: 'Duration cannot be shorter than one day.',
+      name: "DurationTooShort",
+      msg: "Duration cannot be shorter than one day.",
     },
     {
       code: 6005,
-      name: 'FunderAlreadyAuthorized',
-      msg: 'Provided funder is already authorized to fund.',
+      name: "FunderAlreadyAuthorized",
+      msg: "Provided funder is already authorized to fund.",
     },
     {
       code: 6006,
-      name: 'MaxFunders',
-      msg: 'Maximum funders already authorized.',
+      name: "MaxFunders",
+      msg: "Maximum funders already authorized.",
     },
     {
       code: 6007,
-      name: 'CannotDeauthorizePoolAuthority',
-      msg: 'Cannot deauthorize the primary pool authority.',
+      name: "CannotDeauthorizePoolAuthority",
+      msg: "Cannot deauthorize the primary pool authority.",
     },
     {
       code: 6008,
-      name: 'CannotDeauthorizeMissingAuthority',
-      msg: 'Authority not found for deauthorization.',
+      name: "CannotDeauthorizeMissingAuthority",
+      msg: "Authority not found for deauthorization.",
     },
     {
       code: 6009,
-      name: 'MathOverflow',
-      msg: 'Math operation overflow',
+      name: "MathOverflow",
+      msg: "Math operation overflow",
     },
   ],
 };
