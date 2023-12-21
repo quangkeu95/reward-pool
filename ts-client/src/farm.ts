@@ -405,36 +405,6 @@ export class PoolFarmImpl {
     }).add(claimTx);
   }
 
-  // async getClaimableReward(owner: PublicKey) {
-  //   if (!this.eventParser) throw "EventParser not found";
-
-  //   const claimMethodBuilder = await this.claimMethodBuilder(owner);
-
-  //   const claimTransaction = await claimMethodBuilder.transaction();
-
-  //   if (!claimTransaction) return;
-
-  //   const blockhash = (
-  //     await this.program.provider.connection.getLatestBlockhash("finalized")
-  //   ).blockhash;
-  //   const claimTx = new Transaction({
-  //     recentBlockhash: blockhash,
-  //     feePayer: SIMULATION_USER,
-  //   });
-  //   claimTransaction && claimTx.add(claimTransaction);
-
-  //   const tx = await this.program.provider.connection.simulateTransaction(
-  //     claimTx
-  //   );
-
-  //   const simulatedReward = (await parseLogs(
-  //     this.eventParser,
-  //     tx?.value?.logs ?? []
-  //   )) as { amountA: BN; amountB: BN };
-
-  //   return simulatedReward;
-  // }
-
   static async getClaimableRewards(
     owner: PublicKey,
     farmMints: Array<PublicKey>,
