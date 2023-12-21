@@ -7,9 +7,11 @@ import {
   PublicKey,
   Transaction,
   TransactionInstruction,
+  SYSVAR_CLOCK_PUBKEY,
+  ParsedAccountData,
 } from "@solana/web3.js";
 
-import { FarmProgram, Opt, PoolState, UserState } from "./types";
+import { FarmProgram, Opt, PoolState, UserState, ParsedClockState } from "./types";
 import {
   chunks,
   getFarmInfo,
@@ -18,6 +20,7 @@ import {
   parseLogs,
 } from "./utils";
 import { FARM_PROGRAM_ID, SIMULATION_USER } from "./constant";
+
 
 const chunkedFetchMultipleUserAccount = async (
   program: FarmProgram,
@@ -59,6 +62,18 @@ const getAllPoolState = async (
     program,
     farmMints
   )) as Array<PoolState>;
+
+  return poolStates;
+};
+
+const getAllUserState = async (
+  farmMints: Array<PublicKey>,
+  program: FarmProgram
+) => {
+  const poolStates = (await chunkedFetchMultipleUserAccount(
+    program,
+    farmMints
+  )) as Array<UserState>;
 
   return poolStates;
 };
@@ -351,25 +366,25 @@ export class PoolFarmImpl {
       await Promise.all(
         isDual
           ? [
-              getOrCreateATAInstruction(
-                this.poolState.rewardAMint,
-                owner,
-                this.program.provider.connection
-              ),
-              getOrCreateATAInstruction(
-                this.poolState.rewardBMint,
-                owner,
-                this.program.provider.connection
-              ),
-            ]
+            getOrCreateATAInstruction(
+              this.poolState.rewardAMint,
+              owner,
+              this.program.provider.connection
+            ),
+            getOrCreateATAInstruction(
+              this.poolState.rewardBMint,
+              owner,
+              this.program.provider.connection
+            ),
+          ]
           : [
-              getOrCreateATAInstruction(
-                this.poolState.rewardAMint,
-                owner,
-                this.program.provider.connection
-              ),
-              [undefined, undefined],
-            ]
+            getOrCreateATAInstruction(
+              this.poolState.rewardAMint,
+              owner,
+              this.program.provider.connection
+            ),
+            [undefined, undefined],
+          ]
       );
     userRewardAIx && preInstructions.push(userRewardAIx);
     userRewardBIx && preInstructions.push(userRewardBIx);
@@ -429,5 +444,41 @@ export class PoolFarmImpl {
     )) as { amountA: BN; amountB: BN };
 
     return simulatedReward;
+  }
+}
+
+export const getOnchainTime = async (connection: Connection) => {
+  const parsedClock = await connection.getParsedAccountInfo(SYSVAR_CLOCK_PUBKEY);
+
+  const parsedClockAccount = (parsedClock.value!.data as ParsedAccountData).parsed as ParsedClockState;
+
+  const currentTime = parsedClockAccount.info.unixTimestamp;
+  return currentTime;
+};
+
+function rewardPerToken(pool: PoolState, lastTimeRewardApplicable: number) {
+  let totalStake = pool.totalStaked;
+  if (totalStake.isZero()) {
+    return {
+      a: pool.rewardAPerTokenStored,
+      b: pool.rewardBPerTokenStored,
+    }
+  }
+  let timePeriod = new BN(lastTimeRewardApplicable - pool.lastUpdateTime.toNumber());
+  return {
+    a: pool.rewardAPerTokenStored.add(timePeriod.mul(pool.rewardARateU128).div(totalStake)),
+    b: pool.rewardAPerTokenStored.add(timePeriod.mul(pool.rewardARateU128).div(totalStake))
+  }
+}
+
+export function getClaimableRewardSync(onchainTIme: number, userState: UserState, poolState: PoolState) {
+  // update reward
+  let rewardDurationEnd = poolState.rewardDurationEnd.toNumber();
+  let lastTimeRewardApplicable = ((onchainTIme < rewardDurationEnd) ? onchainTIme : rewardDurationEnd);
+  let { a, b } = rewardPerToken(poolState, lastTimeRewardApplicable);
+
+  return {
+    a: (userState.balanceStaked.mul(a.sub(userState.rewardAPerTokenComplete)).div(new BN(1_000_000_000))).add(userState.rewardAPerTokenPending),
+    b: (userState.balanceStaked.mul(b.sub(userState.rewardBPerTokenComplete)).div(new BN(1_000_000_000))).add(userState.rewardBPerTokenPending),
   }
 }

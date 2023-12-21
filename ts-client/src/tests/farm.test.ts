@@ -1,9 +1,9 @@
 import { Cluster, Connection, Keypair, PublicKey } from "@solana/web3.js";
 import AmmImpl from "@mercurial-finance/dynamic-amm-sdk";
-import { PoolFarmImpl } from "../farm";
+import { PoolFarmImpl, getOnchainTime, getClaimableRewardSync } from "../farm";
 import { AnchorProvider, BN, Wallet } from "@coral-xyz/anchor";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
-import { airDropSol } from "../utils";
+import { airDropSol, getFarmProgram } from "../utils";
 import { DEVNET_COIN } from "../constant";
 import { TokenListProvider } from "@solana/spl-token-registry";
 
@@ -41,7 +41,7 @@ describe("Interact with devnet farm", () => {
   let lpBalance: BN;
   let stakedBalance: BN;
   beforeAll(async () => {
-    await airDropSol(DEVNET.connection, mockWallet.publicKey).catch(() => {});
+    await airDropSol(DEVNET.connection, mockWallet.publicKey).catch(() => { });
 
     const USDT = DEVNET_COIN.find(
       (token) =>
@@ -150,4 +150,29 @@ describe("Interact with mainnet farm", () => {
       "9dGX6N3FLAVfKmvtkwHA9MVGsvEqGKnLFDQQFbw5dprr"
     );
   });
+
+
+  test("Get claimable reward", async () => {
+    let onchainTIme = await getOnchainTime(provider.connection);
+    const { program } = getFarmProgram(provider.connection);
+
+    const poolAdrr = new PublicKey(
+      "29DQB5C97HgJg5EKQ2EtnvSk28sS93WkgmnaXErB7HtT"
+    );
+    const poolState = await program.account.pool.fetchNullable(poolAdrr);
+    const owner = new PublicKey(
+      "BULRqL3U2jPgwvz6HYCyBVq9BMtK94Y1Nz98KQop23aD"
+    )
+    const [userPda] = PublicKey.findProgramAddressSync(
+      [owner.toBuffer(), poolAdrr.toBuffer()],
+      program.programId
+    );
+
+    const userState = await program.account.user.fetchNullable(userPda);
+
+    const { a, b } = getClaimableRewardSync(onchainTIme, userState, poolState);
+    console.log(a.toNumber(), b.toNumber())
+  });
+
+
 });
