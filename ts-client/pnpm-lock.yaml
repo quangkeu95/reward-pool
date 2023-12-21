@@ -17,6 +17,9 @@ dependencies:
   '@solana/web3.js':
     specifier: ~1.78.3
     version: 1.78.3
+  buffer-layout:
+    specifier: ^1.2.2
+    version: 1.2.2
   node-fetch:
     specifier: ^2.6.12
     version: 2.6.12
@@ -1975,7 +1978,7 @@ packages:
     dependencies:
       '@solana/buffer-layout': 4.0.1
       '@solana/buffer-layout-utils': 0.2.0
-      '@solana/web3.js': 1.77.3
+      '@solana/web3.js': 1.78.3
       start-server-and-test: 1.15.4
     transitivePeerDependencies:
       - bufferutil

@@ -4,10 +4,13 @@ import {
   Cluster,
   ComputeBudgetProgram,
   Connection,
+  ParsedAccountData,
   PublicKey,
+  SYSVAR_CLOCK_PUBKEY,
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
+import * as BufferLayout from "buffer-layout";
 
 import { FarmProgram, Opt, PoolState, UserState } from "./types";
 import {
@@ -17,7 +20,8 @@ import {
   getOrCreateATAInstruction,
   parseLogs,
 } from "./utils";
-import { FARM_PROGRAM_ID, SIMULATION_USER } from "./constant";
+import { FARM_PROGRAM_ID } from "./constant";
+import { chunkedGetMultipleAccountInfos } from "@mercurial-finance/dynamic-amm-sdk/dist/cjs/src/amm/utils";
 
 const chunkedFetchMultipleUserAccount = async (
   program: FarmProgram,
@@ -401,33 +405,102 @@ export class PoolFarmImpl {
     }).add(claimTx);
   }
 
-  async getClaimableReward(owner: PublicKey) {
-    if (!this.eventParser) throw "EventParser not found";
+  static async getClaimableRewards(
+    owner: PublicKey,
+    farmMints: Array<PublicKey>,
+    connection: Connection
+  ) {
+    const { program } = getFarmProgram(connection);
 
-    const claimMethodBuilder = await this.claimMethodBuilder(owner);
+    const usersPda = farmMints.map((mint) => {
+      const [userStakingAddress] = PublicKey.findProgramAddressSync(
+        [owner.toBuffer(), mint.toBuffer()],
+        FARM_PROGRAM_ID
+      );
 
-    const claimTransaction = await claimMethodBuilder.transaction();
-
-    if (!claimTransaction) return;
-
-    const blockhash = (
-      await this.program.provider.connection.getLatestBlockhash("finalized")
-    ).blockhash;
-    const claimTx = new Transaction({
-      recentBlockhash: blockhash,
-      feePayer: SIMULATION_USER,
+      return userStakingAddress;
     });
-    claimTransaction && claimTx.add(claimTransaction);
 
-    const tx = await this.program.provider.connection.simulateTransaction(
-      claimTx
+    const accountsToFetched = [SYSVAR_CLOCK_PUBKEY, ...farmMints, ...usersPda];
+    const accounts = await chunkedGetMultipleAccountInfos(
+      connection,
+      accountsToFetched
     );
 
-    const simulatedReward = (await parseLogs(
-      this.eventParser,
-      tx?.value?.logs ?? []
-    )) as { amountA: BN; amountB: BN };
+    const [clockAccountInfo, ...restAccounts] = accounts;
+    const clockData = clockAccountInfo?.data;
+    const onChainTime = Number(clockData.readBigInt64LE(8 * 4));
 
-    return simulatedReward;
+    const poolStatesMap = new Map();
+    for (let i = 0; i < farmMints.length; i++) {
+      const farmMint = farmMints[i];
+      const poolAccount = restAccounts[i];
+      const userPdaAccount = restAccounts[i + farmMints.length];
+
+      const poolState = poolAccount?.data
+        ? (program.coder.accounts.decode("pool", poolAccount.data) as PoolState)
+        : undefined;
+      const userState = userPdaAccount?.data
+        ? (program.coder.accounts.decode(
+            "user",
+            userPdaAccount.data
+          ) as UserState)
+        : undefined;
+      if (!poolState) throw new Error("Pool state not found");
+
+      poolStatesMap.set(farmMint.toBase58(), {
+        poolState,
+        userState,
+      });
+    }
+
+    return Array.from(poolStatesMap.entries()).reduce<
+      Map<string, { rewardA: BN; rewardB: BN }>
+    >((accValue, [farmMint, { poolState, userState }]) => {
+      const rewardDurationEnd = poolState.rewardDurationEnd.toNumber();
+      const lastTimeRewardApplicable =
+        onChainTime < rewardDurationEnd ? onChainTime : rewardDurationEnd;
+      const { a, b } = rewardPerToken(poolState, lastTimeRewardApplicable);
+
+      const rewardA = userState
+        ? userState.balanceStaked
+            .mul(a.sub(userState.rewardAPerTokenComplete))
+            .div(new BN(1_000_000_000))
+            .add(userState.rewardAPerTokenPending)
+        : new BN(0);
+      const rewardB = userState
+        ? userState.balanceStaked
+            .mul(b.sub(userState.rewardBPerTokenComplete))
+            .div(new BN(1_000_000_000))
+            .add(userState.rewardBPerTokenPending)
+        : new BN(0);
+      accValue.set(farmMint, {
+        rewardA,
+        rewardB,
+      });
+
+      return accValue;
+    }, new Map());
   }
+}
+
+function rewardPerToken(pool: PoolState, lastTimeRewardApplicable: number) {
+  let totalStake = pool.totalStaked;
+  if (totalStake.isZero()) {
+    return {
+      a: pool.rewardAPerTokenStored,
+      b: pool.rewardBPerTokenStored,
+    };
+  }
+  let timePeriod = new BN(
+    lastTimeRewardApplicable - pool.lastUpdateTime.toNumber()
+  );
+  return {
+    a: pool.rewardAPerTokenStored.add(
+      timePeriod.mul(pool.rewardARateU128).div(totalStake)
+    ),
+    b: pool.rewardBPerTokenStored.add(
+      timePeriod.mul(pool.rewardBRateU128).div(totalStake)
+    ),
+  };
 }

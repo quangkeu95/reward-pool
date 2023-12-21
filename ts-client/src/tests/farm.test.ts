@@ -3,7 +3,7 @@ import AmmImpl from "@mercurial-finance/dynamic-amm-sdk";
 import { PoolFarmImpl } from "../farm";
 import { AnchorProvider, BN, Wallet } from "@coral-xyz/anchor";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
-import { airDropSol } from "../utils";
+import { airDropSol, getFarmProgram } from "../utils";
 import { DEVNET_COIN } from "../constant";
 import { TokenListProvider } from "@solana/spl-token-registry";
 
