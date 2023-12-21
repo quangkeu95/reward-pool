@@ -1,6 +1,6 @@
 {
   "name": "@mercurial-finance/farming-sdk",
-  "version": "1.0.14",
+  "version": "1.0.16-abc1234.0",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -29,6 +29,7 @@
     "@solana/spl-token": "^0.1.8",
     "@solana/spl-token-registry": "^0.2.4574",
     "@solana/web3.js": "~1.78.3",
+    "buffer-layout": "^1.2.2",
     "node-fetch": "^2.6.12"
   },
   "publishConfig": {

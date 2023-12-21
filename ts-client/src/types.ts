@@ -44,18 +44,3 @@ export type FarmProgram = Program<Farming>;
 
 export type PoolState = IdlAccounts<Farming>["pool"];
 export type UserState = IdlAccounts<Farming>["user"];
-
-
-/** Utils */
-export interface ParsedClockState {
-  info: {
-    epoch: number;
-    epochStartTimestamp: number;
-    leaderScheduleEpoch: number;
-    slot: number;
-    unixTimestamp: number;
-  };
-  type: string;
-  program: string;
-  space: number;
-}
