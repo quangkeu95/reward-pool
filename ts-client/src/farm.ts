@@ -215,16 +215,17 @@ export class PoolFarmImpl {
 
     const chunkedClaimAllTx = chunks(claimAllTxs, MAX_CLAIM_ALL_ALLOWED);
 
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash("confirmed");
     return Promise.all(
       chunkedClaimAllTx.map(async (claimAllTx) => {
         return new Transaction({
           feePayer: owner,
-          ...(await program.provider.connection.getLatestBlockhash(
-            "finalized"
-          )),
+          blockhash,
+          lastValidBlockHeight,
         })
-          .add(...claimAllTx)
-          .add(ComputeBudgetProgram.setComputeUnitLimit({ units: 1_400_000 }));
+          .add(ComputeBudgetProgram.setComputeUnitLimit({ units: 1_400_000 }))
+          .add(...claimAllTx);
       })
     );
   }
@@ -462,18 +463,18 @@ export class PoolFarmImpl {
         onChainTime < rewardDurationEnd ? onChainTime : rewardDurationEnd;
       const { a, b } = rewardPerToken(poolState, lastTimeRewardApplicable);
 
-      const rewardA = userState
-        ? userState.balanceStaked
-            .mul(a.sub(userState.rewardAPerTokenComplete))
-            .div(new BN(1_000_000_000))
-            .add(userState.rewardAPerTokenPending)
-        : new BN(0);
-      const rewardB = userState
-        ? userState.balanceStaked
-            .mul(b.sub(userState.rewardBPerTokenComplete))
-            .div(new BN(1_000_000_000))
-            .add(userState.rewardBPerTokenPending)
-        : new BN(0);
+      if (!userState || !poolState) return accValue;
+
+      const rewardA: BN = userState.balanceStaked
+        .mul(a.sub(userState.rewardAPerTokenComplete))
+        .div(new BN(1_000_000_000))
+        .add(userState.rewardAPerTokenPending);
+      const rewardB: BN = userState.balanceStaked
+        .mul(b.sub(userState.rewardBPerTokenComplete))
+        .div(new BN(1_000_000_000))
+        .add(userState.rewardBPerTokenPending);
+
+      if (rewardA.isZero() && rewardB.isZero()) return accValue;
       accValue.set(farmMint, {
         rewardA,
         rewardB,
