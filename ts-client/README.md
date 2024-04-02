@@ -1,7 +1,7 @@
 # Meteora Pool Farm SDK
 
 <p align="center">
-<img align="center" src="https://vaults.mercurial.finance/icons/logo.svg" width="180" height="180" />
+<img align="center" src="https://app.meteora.ag/icons/logo.svg" width="180" height="180" />
 </p>
 <br>
 
@@ -11,7 +11,7 @@ NPM: https://www.npmjs.com/package/@mercurial-finance/farming-sdk
 
 SDK: https://github.com/MeteoraAg/reward-pool
 
-<!-- Docs: https://docs.mercurial.finance/mercurial-dynamic-yield-infra/ -->
+<!-- Docs: https://docs.meteora.ag/mercurial-dynamic-yield-infra/ -->
 
 Discord: https://discord.com/channels/841152225564950528/864859354335412224
 
