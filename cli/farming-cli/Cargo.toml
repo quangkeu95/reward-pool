@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "3.1.8", features = ["derive"] }
-farming = { path = "../../programs/farming" }
+farming = { path = "../../programs/farming", features = ["cpi"] }
 shellexpand = "2.1.0"
 anchor-lang = "0.28.0"
 anchor-spl = "0.28.0"
